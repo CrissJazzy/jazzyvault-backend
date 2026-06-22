@@ -1,0 +1,41 @@
+# ===== Core =====
+fastapi==0.115.6
+uvicorn[standard]==0.34.0
+python-multipart==0.0.20
+pydantic==2.10.4
+pydantic-settings==2.7.1
+
+# ===== Supabase =====
+supabase==2.11.0
+gotrue==2.11.1
+
+# ===== AI Providers =====
+# NOTE: google-generativeai (the old SDK) reached end-of-life on
+# Aug 31, 2025 and is no longer maintained. This uses its replacement,
+# google-genai, which has a different API shape (Client-based, not
+# configure()+GenerativeModel). See app/services/ai_providers/gemini.py.
+google-genai==2.3.0
+openai==1.59.6
+groq==0.13.1
+
+# ===== Document Conversion =====
+# Note: DOCX<->PDF conversion uses LibreOffice headless (the `soffice`
+# CLI) via subprocess, installed at the OS level in the Dockerfile —
+# not a Python package. docx2pdf was deliberately NOT used here: it
+# only works on Windows/Mac (it shells out to MS Word's COM API or
+# LibreOffice via AppleScript) and silently fails on Linux containers.
+pypdf==5.1.0
+pdf2image==1.17.0
+Pillow==11.0.0
+python-docx==1.1.2
+
+# ===== Security & Auth =====
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+
+# ===== Rate Limiting =====
+slowapi==0.1.9
+
+# ===== Utilities =====
+python-dotenv==1.0.1
+httpx==0.28.1
