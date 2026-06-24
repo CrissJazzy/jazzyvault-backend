@@ -16,6 +16,7 @@ class CurrentUser(BaseModel):
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ) -> CurrentUser:
+            print("AUTH HEADER RECEIVED:", credentials)
     if credentials is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
@@ -23,7 +24,7 @@ async def get_current_user(
         )
 
     token = credentials.credentials
-
+print("TOKEN START:", token[:20])
     try:
         payload = jwt.decode(
             token,
@@ -31,6 +32,7 @@ async def get_current_user(
             algorithms=["HS256"],
             audience="authenticated",
         )
+        print("JWT DECODE SUCCESS")
     except JWTError:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
