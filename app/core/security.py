@@ -17,9 +17,10 @@ async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ) -> CurrentUser:
 
-    print("CREDENTIALS:", credentials)
+    print("AUTH HEADER:", credentials)
 
     if credentials is None:
+        print("NO TOKEN RECEIVED")
         raise HTTPException(
             status_code=401,
             detail="Missing authentication token",
@@ -37,7 +38,7 @@ async def get_current_user(
             audience="authenticated",
         )
 
-        print("PAYLOAD:", payload)
+        print("JWT DECODE SUCCESS")
 
     except JWTError as e:
         print("JWT ERROR:", str(e))
