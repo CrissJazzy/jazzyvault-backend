@@ -16,15 +16,19 @@ class CurrentUser(BaseModel):
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials | None = Depends(bearer_scheme),
 ) -> CurrentUser:
-            print("AUTH HEADER RECEIVED:", credentials)
+
+    print("CREDENTIALS:", credentials)
+
     if credentials is None:
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Missing authentication token",
         )
 
     token = credentials.credentials
-print("TOKEN START:", token[:20])
+
+    print("TOKEN RECEIVED:", token[:30])
+
     try:
         payload = jwt.decode(
             token,
@@ -32,10 +36,14 @@ print("TOKEN START:", token[:20])
             algorithms=["HS256"],
             audience="authenticated",
         )
-        print("JWT DECODE SUCCESS")
-    except JWTError:
+
+        print("PAYLOAD:", payload)
+
+    except JWTError as e:
+        print("JWT ERROR:", str(e))
+
         raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
+            status_code=401,
             detail="Invalid or expired authentication token",
         )
 
