@@ -1,6 +1,5 @@
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
-from jose import JWTError, jwt
 from pydantic import BaseModel
 
 from app.core.config import settings
@@ -30,23 +29,27 @@ async def get_current_user(
 
     print("TOKEN RECEIVED:", token[:30])
 
-    try:
-        payload = jwt.decode(
-            token,
-            settings.SUPABASE_JWT_SECRET,
-            algorithms=["HS256"],
-            audience="authenticated",
-        )
+  try:
+    response = supabase.auth.get_user(token)
 
-        print("JWT DECODE SUCCESS")
-
-    except JWTError as e:
-        print("JWT ERROR:", str(e))
-
+    if not response.user:
         raise HTTPException(
             status_code=401,
-            detail="Invalid or expired authentication token",
+            detail="Invalid token",
         )
+
+    return CurrentUser(
+        id=response.user.id,
+        email=response.user.email,
+    )
+
+except Exception as e:
+    print("AUTH ERROR:", str(e))
+
+    raise HTTPException(
+        status_code=401,
+        detail="Invalid or expired authentication token",
+    )
 
     user_id = payload.get("sub")
     if not user_id:
