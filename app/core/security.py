@@ -4,7 +4,7 @@ from jose import JWTError, jwt
 from pydantic import BaseModel
 
 from app.core.config import settings
-
+from app.services.supabase import supabase
 bearer_scheme = HTTPBearer(auto_error=False)
 
 
